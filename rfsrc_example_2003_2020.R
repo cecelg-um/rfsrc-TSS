@@ -9,11 +9,9 @@ library(corrplot)
 library(caTools)
 library(data.table)
 library(parallel)
-# library(Cairo)
 # set wd ------------------------------------------------------------------
 setwd("/scratch/projects/tss_pegasus/")
 sink('run_log_20230129_dev_2003_2020.txt')
-start_time <- Sys.time()
 # parallel set up ? --------------------------------------------------------
 # no parallel to avoid exit code 139?
 cores <- detectCores()
@@ -22,7 +20,7 @@ options(rf.cores=cores, mc.cores=cores)
 a=getwd()
 path = '/scratch/projects/tss_pegasus/'
 file = 'northern_0.01Deg_18UTC_2003_2020.csv' # ~15GB
-print(paste0(file))
+print(paste(file))
 overalldatunsort <- list()
 overalldatunsort <- fread(file.path(path,file))
 overalldatunsort <- data.frame(overalldatunsort)
@@ -53,11 +51,9 @@ for(j in 1:(length(outcomes))){ # all response vars
   print(paste('training', outcomes[j], 'model'))
   rf_overall[[j]]=rfsrc(as.formula(paste0(outcomes[j],'~.')),data=train[,-match(c(removevar, outcomes[-j]), names(train))],importance = T)
 }
-# unsure ------------------------------------------------------------------
 names(rf_overall)=outcomes # all response vars
 setwd(a)
-# plot tester -------------------------------------------------------------
-plotter_ts <- Sys.time()
+# plotting -------------------------------------------------------------
 for(i in 1:length(rf_overall)){
   print(file)
   print(weather_sel)
